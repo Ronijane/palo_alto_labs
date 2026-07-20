@@ -1,0 +1,29 @@
+#Site to Site VPN using Palo Alto Firewall(w/ redundancy)
+
+Device List:
+2 Palo Alto VM Firewall
+2 Router
+2 Switch
+2 Virtual PC
+
+
+IP Address:
+Site A:
+198.51.100.0/28(public)
+203.0.113.0/28(public)
+192.168.10.0/24(private)
+
+Site B:
+192.0.2.0/28(public)
+110.5.69.0/28(public)
+172.16.10.0/24(private)
+
+
+
+Setup Site A
+
+Configurations:
+
+Palo Alto Firewall
+1. Configure eth1/1 IP address. Go to Network > Interfaces > Ethernet. Click ethernet1/1 > select Layer3 for interface type. Select or Create Virtual Router > select or create Security Zone. Named it Outside Zone.
+
