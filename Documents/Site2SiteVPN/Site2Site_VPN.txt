@@ -140,6 +140,29 @@ IPSEC Tunnels
                 Add Profile > name the Profile > Actions set to Fail Over
 
 
+Static Routes:
+1. On Network > Virtual Routers > Create default static route 0.0.0.0/0 
+    Click Add > name static route > destination 0.0.0.0/0
+    Interface: ethernet1/1
+    Next Hop: 203.0.113.1
+    Path Monitoring: Source 203.0.113.2/28 to 110.5.69.1 - this is to check the reachability on ISP path to Site B
+                     Source 203.0.113.2/28 to 203.0.113.1 - check it's path to ISP
+
+2. To ISP B
+    Click Add > name static route > destination 0.0.0.0/0
+        Interface: ethernet1/3
+        Next Hop: 198.51.100.1
+        Path Monitoring: Source 198.51.100.2/28 to 192.0.2.1 - this is to check the reachability on ISP path to Site A
+                         Source 198.51.100.2/28 to 198.51.100.1 - check it's path to ISP
+
+3. Static Route from Site A to Site B through Tunnel 1
+    Click Add > name static route > destination 172.16.10.0/24 (Site B's Private Subnet)
+    Interface: tunnel.10
+
+4. Static Route from Site A to Site B through Tunnel 2
+    Click Add > name static route > destination 172.16.10.0/24 (Site B's Private Subnet)
+    Interface: tunnel.20
+
 
 Security Policies Configurations:
 1. Allow Site A Outside Zone to Site B Outside Zone (tunnel 1)
