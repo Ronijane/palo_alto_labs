@@ -165,3 +165,12 @@ Configs:
     
     4. Create Security Policy name > Source Site_To_Site Zone > Source Address 172.16.10.0/24 > Destination Inside Zone > 
         Destination Adddress 192.168.10.0/24 > Application any > Actions Allow
+
+
+Commit Changes and Apply.
+
+
+
+Site B
+
+Same procedures for Site A. Just configure the IP Address and NAT Rules appropriately.
