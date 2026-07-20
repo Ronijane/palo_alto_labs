@@ -26,10 +26,8 @@ Configurations:
 
 Palo Alto Firewall
 <<<<<<< HEAD
-1. Configure eth1/1 IP address. Go to Network > Interfaces > Ethernet. Click ethernet1/1 > select Layer3 for interface type. Select or Create Virtual Router > select or create Security Zone. Named it Outside Zone.
-=======
-1. Configure eth1/1 IP address. 
+1. Configure eth1/1 IP address. Go to Network > Interfaces > Ethernet. Click ethernet1/1 > select Layer3 for interface type. Select or Create
+Virtual Router > select or create Security Zone. Named it Outside Zone.
+2. 
 
-
->>>>>>> f9f998505581c74dc8c24233b3719fa91b6e9d76
 
