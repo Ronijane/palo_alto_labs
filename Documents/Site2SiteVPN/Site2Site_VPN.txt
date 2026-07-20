@@ -19,15 +19,149 @@ Site B:
 172.16.10.0/24(private)
 
 
+Note: You can create Address Objects or Groups for these IPs
+
+
 
 Setup Site A
 
-Configurations:
+Interface Configurations:
 
 Palo Alto Firewall
-<<<<<<< HEAD
-1. Configure eth1/1 IP address. Go to Network > Interfaces > Ethernet. Click ethernet1/1 > select Layer3 for interface type. Select or Create
-Virtual Router > select or create Security Zone. Named it Outside Zone.
+
+1.  * Configure eth1/1 IP address. Go to Network > Interfaces > Ethernet. 
+    * Click ethernet1/1 > select Layer3 for interface type. 
+    * Click and create Virtual Router. You can use the default or create new.
+    * Click and create Security Zone. Named it Outside Zone.
+    * On the IPV4 tab > add 203.0.113.2/28
+
+
+2.  * Configure eth1/3 IP address. Go to Network > Interfaces > Ethernet. 
+    * Click ethernet1/3 > select Layer3 for interface type. 
+    * Select the existing Virtual Router.
+    * Click Security Zone. Select Outside Zone.
+    * On the IPV4 tab > add 198.51.100.2/28
+
+3.  * Configure eth1/2 IP address. Go to Network > Interfaces > Ethernet. 
+    * Click ethernet1/2 > select Layer3 for interface type. 
+    * Select the existing Virtual Router.
+    * Click Security Zone. Create Inside Zone.
+    * On the IPV4 tab > add 192.168.10.0/24
+
+
+
+Site to Site VPN Configurations:
+
+1.
+Tunnel 1
+    On Network > Interfaces > Tunnel > click Add
+        On the Tunnel Interface setup > configure the Tunnel Number 1-9999
+        Select the existing Virtual Router.
+        Click and create Security Zone. Named it Site_To_Site Zone.
+        On the IPV4 tab > add 10.10.10.1/24
+
+Tunnel 2
+    On Network > Interfaces > Tunnel > click Add
+        On the Tunnel Interface setup > configure the Tunnel Number 1-9999
+        Select the existing Virtual Router.
+        Click and create Security Zone. Named it Site_To_Site Zone.
+        On the IPV4 tab > add 20.20.20.1/24
+
 2. 
+IKE Crypto
+    On Network > Network Profiles > IKE Crypto > click Add
+        Create a name for IKE Crytpo Profile
+        Select a DH GROUP > ex: group20
+        Authentication(optional)
+        On Encryption > add aes-256-gcm
+
+3. 
+IPSec Crypto
+    On Network > Network Profiles > IPSec Crypto > click Add
+        Create a name for IPSec Crytpo Profile
+        IPSec Protocol = ESP
+        Encryption > select aes-256-gcm
+        Authentication(optional)
+        DH GROUP > select ex. group20
+
+4.
+IKE Gateways (for Tunnel 1)
+    On Network > Network Profiles > IKE Gateways > click Add
+        Create a name for IKE Gateways Profile
+        Version = IKEv2 only mode
+        Address Type = IPV4
+        Select the Interface > ethernet1/1
+        Local IP Address = 203.0.113.2/28
+        Peer IP Address = 110.5.69.2(Site B Firewall IP)
+        Authentication > set Pre-shared Key > confirm Pre-shared Key
+        On the Advance Options tab
+            IKEv2 > IKE Crypto Profile > select the IKE Cryptop Profile you create
 
 
+IKE Gateways (for Tunnel 2)
+    On Network > Network Profiles > IKE Gateways > click Add
+        Create a name for IKE Gateways Profile
+        Version = IKEv2 only mode
+        Address Type = IPV4
+        Select the Interface > ethernet1/3
+        Local IP Address = 198.51.100.2/28
+        Peer IP Address = 192.0.2.2(Site B Firewall IP)
+        Authentication > set Pre-shared Key > confirm Pre-shared Key
+        On the Advance Options tab
+            IKEv2 > IKE Crypto Profile > select the IKE Cryptop Profile you create
+
+
+5.
+IPSEC Tunnels
+    Tunnel 1
+    On Network > Interfaces > IPSec Tunnels > click Add
+        Create a name for IPSec Tunnel
+        Select the Tunnel Interface you configured
+        Type = Auto Key
+        Address Type = IPV4
+        Select the IKE Gateway you configured
+        Select the IPSec Crypto Profile you configured
+        Check the Tunnel Monitor (this will monitor the status of the tunnel connections on both Sites)
+            Destination IP: 10.10.10.2/24(Tunnel 1 interface IP address on Site B Firewall)
+            Select Profile > create Profile > Network > Network Profiles > Monitor
+                Add Profile > name the Profile > Actions set to Fail Over
+            
+    Tunnel 2
+    On Network > Interfaces > IPSec Tunnels > click Add
+        Create a name for IPSec Tunnel
+        Select the Tunnel Interface you configured
+        Type = Auto Key
+        Address Type = IPV4
+        Select the IKE Gateway you configured
+        Select the IPSec Crypto Profile you configured
+        Check the Tunnel Monitor (this will monitor the status of the tunnel connections on both Sites)
+            Destination IP: 20.20.20.2/24(Tunnel 1 interface IP address on Site B Firewall)
+            Select Profile > create Profile > Network > Network Profiles > Monitor
+                Add Profile > name the Profile > Actions set to Fail Over
+
+
+
+Security Policies Configurations:
+1. Allow Site A Outside Zone to Site B Outside Zone (tunnel 1)
+2. Allow Site A Outside Zone to Site B Outside Zone (tunnel 2)
+3. Allow Site A Inside Zone(private IP subnet) to Site B Inside Zone(private IP subnet) using Site_To_Site Zone
+4. Reverse of #3. Site_To_Site Zone(Site B) to Inside Zone(Site A)
+
+Configs:
+    1. Create Security Policy name > Source Outside Zone > Source Address 203.0.113.2/28 > Destination Outside Zone > 
+        Destination Adddress 110.5.69.2/28 > Application "ipsec" > Actions Allow
+    
+       Create Security Policy name > Source Outside Zone > Source Address 110.5.69.2/28 > Destination Outside Zone > 
+        Destination Adddress 203.0.113.2/28 > Application "ipsec" > Actions Allow
+
+    2. Create Security Policy name > Source Outside Zone > Source Address 198.51.100.2/28 > Destination Outside Zone > 
+        Destination Adddress 192.0.2.2/28 > Application "ipsec" > Actions Allow
+
+       Create Security Policy name > Source Outside Zone > Source Address 192.0.2.2/28 > Destination Outside Zone > 
+        Destination Adddress 198.51.100.2/28 > Application "ipsec" > Actions Allow
+    
+    3. Create Security Policy name > Source Inside Zone > Source Address 192.168.10.0/24 > Destination Site_To_Site Zone > 
+        Destination Adddress 172.16.10.0/24 > Application any > Actions Allow
+    
+    4. Create Security Policy name > Source Site_To_Site Zone > Source Address 172.16.10.0/24 > Destination Inside Zone > 
+        Destination Adddress 192.168.10.0/24 > Application any > Actions Allow
