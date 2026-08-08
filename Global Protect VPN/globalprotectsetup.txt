@@ -13,3 +13,4 @@ Note: I am using my home network bridge to the eth1/5 of the Palo Alto Firewall.
       Will using my own PC to connect to the VPN.
 
 Certificates:
+1. Create a Root CA certificate > Add Global Protect CA.
