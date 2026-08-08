@@ -1,8 +1,15 @@
 #Global Protect VPN with Palo Alto Firewall(Unlicensed)
 
 Device List:
-2 Palo Alto VM Firewall
-2 Router
-2 Switch
-2 Virtual PC
-2
+1 Palo Alto VM Firewall
+1 PC
+
+Interfaces:
+
+eth1/5 - 192.168.100.33 - Outside Zone
+tunnel.100 - GP Zone
+
+Note: I am using my home network bridge to the eth1/5 of the Palo Alto Firewall.
+      Will using my own PC to connect to the VPN.
+
+Certificates:
