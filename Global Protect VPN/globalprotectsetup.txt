@@ -1,0 +1,8 @@
+#Global Protect VPN with Palo Alto Firewall(Unlicensed)
+
+Device List:
+2 Palo Alto VM Firewall
+2 Router
+2 Switch
+2 Virtual PC
+2
